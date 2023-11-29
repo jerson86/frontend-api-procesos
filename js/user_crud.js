@@ -66,7 +66,7 @@ function verModificarUsuario(id){
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" name="email" id="email" required value="${usuario.email}"> <br>
                     <!--<label for="password" class="form-label">Password</label>-->
-                    <input type="hidden" class="form-control" id="password" name="password" required> <br>
+                    <input type="hidden" class="form-control" id="password" name="password" value="12345678"> <br>
                     <button type="button" class="btn btn-outline-warning" 
                         onclick="modificarUsuario('${usuario.id}')">Modificar
                     </button>
@@ -91,8 +91,22 @@ async function modificarUsuario(id){
         headers:headersUser,
         body: JSON.stringify(jsonData)
     });
-    listar();
-    alertas("The user has been modified successfully!",1)
+    if(request.ok){
+        alertas("The user has been modified successfully!",1)
+        listar();
+    }
+    else{
+        const data = await request.json(); // Espera a que la promesa se resuelva
+        console.log(data); // Aquí puedes manejar la data de la respuesta
+        const dataArray = Object.values(data);
+        console.log(dataArray); // Aquí puedes manejar la data de la respuesta
+        var dataResponse='';
+        for(var v of dataArray){
+            dataResponse += "<li>"+v+"</li>";
+        }
+
+        alertas("Error: <br>"+dataResponse, 2)
+    }
     document.getElementById("contentModal").innerHTML = '';
     var myModalEl = document.getElementById('modalUsuario')
     var modal = bootstrap.Modal.getInstance(myModalEl) // Returns a Bootstrap modal instance
